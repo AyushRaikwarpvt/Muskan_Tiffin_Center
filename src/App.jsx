@@ -9,12 +9,12 @@ function App() {
   return (
     <div>
       <Landing />
-      {/* <h1></h1> */}
+  
       <ServicePage />
       <WhyChooseUs />
       <About/>
       <Footer/>
-      {/* <HeroSection/> */}
+  
     </div>
   );
 }
