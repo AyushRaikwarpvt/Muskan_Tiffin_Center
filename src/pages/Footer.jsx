@@ -1,5 +1,10 @@
+import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaWhatsapp } from 'react-icons/fa';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const footerLinks = [
   { name: 'Home', href: '#' },
@@ -16,9 +21,31 @@ const socialMediaLinks = [
   { icon: <FaWhatsapp />, href: 'https://wa.me/9098559955' }, // WhatsApp link with contact number
 ];
 
+
+
 export default function Footer() {
+  const footerRef = useRef(null);
+
+  useEffect(() => {
+    gsap.fromTo(
+      footerRef.current,
+      { opacity: 0, y: 50 },
+      {
+        opacity: 1,
+        y: 0,
+        scrollTrigger: {
+          trigger: footerRef.current,
+          start: "top bottom", // Adjust this according to when you want it to start animating
+          end: "top center",
+          scrub: 1,
+        },
+        duration: 1.5,
+      }
+    );
+  }, []);
+
   return (
-    <footer className="bg-white text-black py-8">
+    <footer ref={footerRef} className="bg-white text-black py-8">
       <div className="max-w-4xl mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-between items-center mb-4">
           <motion.h2
