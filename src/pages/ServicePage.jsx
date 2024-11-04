@@ -1,4 +1,9 @@
+import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const services = [
   {
@@ -28,28 +33,62 @@ const services = [
 ];
 
 export default function ServicePage() {
+  const serviceRefs = useRef([]);
+  const headerRef = useRef(null); // Ref for the header section
+
+  useEffect(() => {
+    // Animate the header (Services title and description)
+    gsap.fromTo(
+      headerRef.current,
+      { opacity: 0, y: 50 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        scrollTrigger: {
+          trigger: headerRef.current,
+          start: "top 85%", 
+          toggleActions: "play none none none",
+        },
+      }
+    );
+
+    // Animate the cards one by one
+    serviceRefs.current.forEach((serviceRef, index) => {
+      gsap.fromTo(
+        serviceRef,
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          delay: index * 0.2, // Delay for staggered effect
+          scrollTrigger: {
+            trigger: serviceRef,
+            start: "top 85%", // Trigger when each card enters the viewport
+            toggleActions: "play none none none",
+          },
+        }
+      );
+    });
+  }, []);
+
   return (
-    <section className="py-12 px-4 bg-gray-50">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="max-w-6xl mx-auto text-center mb-12"
-      >
-        <h2 className="text-4xl font-bold mb-4">Services</h2>
-        <p className="text-xl text-gray-600">
+    <section className="py-12 px-4 bg-gray-50" data-scroll data-scroll-speed="2">
+      <div ref={headerRef} className="max-w-6xl mx-auto text-center mb-12">
+        <motion.h2 className="text-4xl font-bold mb-4">Services</motion.h2>
+        <motion.p className="text-xl text-gray-600">
           We have an exceptional range of services to help you.
-        </p>
-      </motion.div>
+        </motion.p>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
         {services.map((service, index) => (
           <motion.div
             key={service.title}
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: index * 0.1 }}
-            whileHover={{ y: -40 }} // This will move the card up by 40px on hover
+            ref={(el) => (serviceRefs.current[index] = el)} // Save each card reference
             className="bg-white rounded-lg shadow-lg overflow-hidden"
+            whileHover={{ y: -20 }} // Move card up on hover
           >
             <img
               src={service.image}
