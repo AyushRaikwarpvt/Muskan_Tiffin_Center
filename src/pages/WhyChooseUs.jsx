@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { Utensils, Clock, DollarSign, Leaf } from "lucide-react";
+import { useEffect, useRef ,useState} from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Utensils, Clock, DollarSign, Leaf } from "lucide-react";
 // import "./cards.css";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -9,6 +9,7 @@ gsap.registerPlugin(ScrollTrigger);
 export default function WhyChooseUs() {
   const [activeVideo, setActiveVideo] = useState("");
 
+  const sectionRef = useRef(null);
   const reasons = [
     {
       icon: <Utensils className="h-8 w-8" />,
@@ -36,8 +37,23 @@ export default function WhyChooseUs() {
     },
   ];
 
+  useEffect(() => {
+    gsap.fromTo(
+      sectionRef.current,
+      { opacity: 0, scale: 0.8 },
+      {
+        opacity: 1, scale: 1,
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top center",
+        },
+        duration: 1,
+      }
+    );
+  }, []);
+
   return (
-    <section className="w-full h-full py-16 relative overflow-hidden">
+    <section ref={sectionRef} className="w-full h-full py-16 relative overflow-hidden">
       {/* Background Video */}
       {activeVideo && (
         <video
